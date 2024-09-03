@@ -1,0 +1,6 @@
+@Raven_HostAddress = http://localhost:5063
+
+GET {{Raven_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

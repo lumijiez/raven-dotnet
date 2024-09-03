@@ -1,0 +1,6 @@
+﻿services:
+  raven:
+    image: raven
+    build:
+      context: .
+      dockerfile: Raven/Dockerfile
