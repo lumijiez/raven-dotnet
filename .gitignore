@@ -1,0 +1,78 @@
+# General
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+*.env
+
+# Node.js (for React app in the client folder)
+client/node_modules/
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/build/
+
+# React specific
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
+client/.cache/
+
+# ASP.NET Core (for the server folder)
+*.csproj.user
+*.csproj.DotSettings
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+server/Raven/bin/
+server/Raven/obj/
+server/Raven/*.pdb
+server/Raven/*.exe
+server/Raven/*.dll
+
+# ASP.NET Code Coverage
+*.coverage
+*.coveragexml
+
+# ASP.NET Publish
+server/Raven/publish/
+server/Raven/*.pubxml
+server/Raven/*.publishproj
+
+# ASP.NET Specific (Rider/JetBrains)
+server/Raven/.idea/
+server/Raven/*.Rider/
+server/Raven/*.DotSettings
+
+# Visual Studio
+.vscode/*-/
+.vscode/.DS_Store
+.vscode/*.pyc
+.vscode/*.pyo
+.vscode/__pycache__/
+*.vs
+.vscode/.vscode/
+*.cache
+.vscode/testResults/
+.vscode/bin/
+server/Raven/.vs/
+server/Raven/Generated/
+server/Raven/TestResults/
+*.localhistory/
+
+# Debug/Build files
+/debug/
+/Debug/
+server/Raven/debug/
+server/Raven/Debug/
+obj/
+Obj/
+server/Raven/Obj/
+bin/
+Bin/
+server/Raven/Bin/
+*.tmp
+*.temp
