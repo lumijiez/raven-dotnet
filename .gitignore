@@ -71,8 +71,8 @@ server/Raven/Debug/
 obj/
 Obj/
 server/Raven/Obj/
-bin/
 Bin/
+bin/
 server/Raven/Bin/
 *.tmp
 *.temp
