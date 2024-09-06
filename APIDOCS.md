@@ -1,6 +1,6 @@
 # Telegram-like App Microservices API Documentation
 
-This document outlines the API endpoints for each microservice in the Telegram-like application.
+This document outlines the API endpoints for each microservice.
 
 ---
 
@@ -10,8 +10,8 @@ Handles authentication, registration, token generation, and OAuth.
 ### Endpoints
 - `POST /auth/login`
   - **Description**: User login.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "username": "string",
       "password": "string"
@@ -21,8 +21,8 @@ Handles authentication, registration, token generation, and OAuth.
 
 - `POST /auth/register`
   - **Description**: Register a new user.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "username": "string",
       "password": "string",
@@ -33,8 +33,8 @@ Handles authentication, registration, token generation, and OAuth.
 
 - `POST /auth/refresh-token`
   - **Description**: Refresh the access token using a refresh token.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "refreshToken": "string"
     }
@@ -52,8 +52,8 @@ Manages user profiles, settings, and other user-related actions.
 ### Endpoints
 - `GET /user/{uuid}/profile`
   - **Description**: Get user profile by UUID.
-  - **Response**: 
-    ```
+  - **Response**:
+    ```json
     {
       "username": "string",
       "email": "string",
@@ -63,8 +63,8 @@ Manages user profiles, settings, and other user-related actions.
 
 - `PUT /user/{uuid}/profile`
   - **Description**: Update user profile settings.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "username": "string",
       "settings": {}
@@ -88,15 +88,15 @@ Handles chat creation, membership, and metadata.
 ### Endpoints
 - `POST /chat/new`
   - **Description**: Create a new chat.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "members": ["uuid1", "uuid2"],
       "chatType": "dialog"
     }
     ```
-  - **Response**: 
-    ```
+  - **Response**:
+    ```json
     {
       "chatId": "string"
     }
@@ -104,15 +104,15 @@ Handles chat creation, membership, and metadata.
 
 - `POST /chat/group`
   - **Description**: Create a new group chat.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "groupName": "string",
       "members": ["uuid1", "uuid2", "uuid3"]
     }
     ```
-  - **Response**: 
-    ```
+  - **Response**:
+    ```json
     {
       "chatId": "string",
       "groupName": "string",
@@ -140,28 +140,15 @@ Handles chat creation, membership, and metadata.
 ## MessageService (`/message/*`)
 Handles messages, including sending and receiving messages, and SignalR connections for real-time communication.
 
+### SignalR Usage
+- **Connection Endpoint**: `/message/connect`
+- **Description**: Client establishes SignalR connection for real-time messaging.
+- **Message Handling**: Client sends message via SignalR, message goes to a RabbitMQ queue, MessageService stores the message and routes it back to the appropriate recipient.
+
 ### Endpoints
-- `POST /message/{chatId}/send`
-  - **Description**: Send a message to a chat.
-  - **Request Body**: 
-    ```
-    {
-      "content": "string",
-      "sender": "uuid",
-      "type": "text/image/etc."
-    }
-    ```
-  - **Response**: 
-    ```
-    {
-      "messageId": "string",
-      "timestamp": "string"
-    }
-    ```
-  
 - `GET /message/{chatId}`
   - **Description**: Retrieve messages from a chat.
-  
+
 - `DELETE /message/{chatId}/{messageId}`
   - **Description**: Delete a specific message.
 
@@ -185,14 +172,14 @@ Handles temporary, self-destructing messages stored in Redis with a specified li
 ### Endpoints
 - `POST /temporary/{chatId}/send`
   - **Description**: Send a temporary message that will self-destruct after a specific time.
-  - **Request Body**: 
-    ```
+  - **Request Body**:
+    ```json
     {
       "content": "string",
       "expiryTime": "timestamp"
     }
     ```
-  
+
 - `DELETE /temporary/{chatId}/{messageId}`
   - **Description**: Delete a temporary message manually before its expiry.
 
@@ -208,8 +195,8 @@ Handles media uploads and downloads, and file storage in a CDN.
 - `POST /media/upload`
   - **Description**: Upload media (images, videos, files).
   - **Request Body**: File data.
-  - **Response**: 
-    ```
+  - **Response**:
+    ```json
     {
       "mediaUrl": "string"
     }
@@ -230,8 +217,8 @@ Handles media uploads and downloads, and file storage in a CDN.
 
 ### `AuthService` -> `UserService` Event
 - **Event**: `UserRegistered`
-- **Payload**: 
-    ```
+- **Payload**:
+    ```json
     {
       "uuid": "string",
       "email": "string",
@@ -241,8 +228,8 @@ Handles media uploads and downloads, and file storage in a CDN.
 
 ### `MessageService` -> `ChatService` Event
 - **Event**: `MessageSent`
-- **Payload**: 
-    ```
+- **Payload**:
+    ```json
     {
       "messageId": "string",
       "chatId": "string",
@@ -255,7 +242,7 @@ Handles media uploads and downloads, and file storage in a CDN.
 ### `ManagementService` Event
 - **Event**: `UserDeleted`
 - **Payload**:
-    ```
+    ```json
     {
       "uuid": "string",
       "deletedAt": "timestamp"
