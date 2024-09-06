@@ -198,7 +198,7 @@ Handles media uploads and downloads, and file storage in a CDN.
   - **Response**:
     ```json
     {
-      "mediaUrl": "string"
+      "mediaId": "string"
     }
     ```
 
