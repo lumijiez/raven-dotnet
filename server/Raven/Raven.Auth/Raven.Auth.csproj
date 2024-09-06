@@ -20,7 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Raven.Auth.Data\Raven.Auth.Data.csproj" />
+      <ProjectReference Include="..\Raven.Auth.Application\Raven.Auth.Application.csproj" />
+      <ProjectReference Include="..\Raven.Auth.Infrastructure\Raven.Auth.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

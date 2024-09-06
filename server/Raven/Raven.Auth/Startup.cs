@@ -50,14 +50,14 @@ public class Startup(IConfiguration configuration)
 
     private void EvolveMigrate()
     {
-        var assembly = Assembly.Load("Raven.Auth.Data"); 
+        var assembly = Assembly.Load("Raven.Auth.Infrastructure"); 
         try
         {
             var cnx = new NpgsqlConnection(Configuration.GetConnectionString("AuthDatabaseConnection"));
             var evolve = new Evolve(cnx, WriteLine)
             {
                 EmbeddedResourceAssemblies = [assembly],
-                EmbeddedResourceFilters = new[] { "Raven.Auth.Data.Migrations" },
+                EmbeddedResourceFilters = new[] { "Raven.Auth.Infrastructure.Migrations" },
                 IsEraseDisabled = true,
             };
 

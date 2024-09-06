@@ -1,6 +1,0 @@
-@Raven.AuthService_HostAddress = http://localhost:5248
-
-GET {{Raven.AuthService_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
