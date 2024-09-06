@@ -5,7 +5,7 @@ using Npgsql;
 using Raven.Auth.Data;
 using static System.Console;
 
-namespace Raven.AuthService;
+namespace Raven.Auth;
 
 public class Startup(IConfiguration configuration)
 {

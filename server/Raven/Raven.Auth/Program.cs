@@ -1,4 +1,4 @@
-using Raven.AuthService;
+using Raven.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;

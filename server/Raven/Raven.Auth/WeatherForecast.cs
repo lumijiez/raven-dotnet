@@ -1,4 +1,4 @@
-namespace Raven.AuthService;
+namespace Raven.Auth;
 
 public class WeatherForecast
 {

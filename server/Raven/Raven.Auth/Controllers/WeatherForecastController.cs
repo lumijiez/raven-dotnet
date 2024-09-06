@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Raven.AuthService.Controllers;
+namespace Raven.Auth.Controllers;
 
 [ApiController]
 [Route("[controller]")]
