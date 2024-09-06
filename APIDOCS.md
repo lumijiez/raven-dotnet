@@ -147,10 +147,11 @@ Handles messages, including sending and receiving messages, and SignalR connecti
 
 ### Endpoints
 - `GET /message/{chatId}`
-  - **Description**: Retrieve messages from a chat.
+  - **Description**: Retrieve messages from a chat with pagination. Optionally use `beforeMessageId` to get messages before a specific message.
+  - **Request Parameters**: `beforeMessageId` (optional), `limit` (number of messages to retrieve).
 
 - `DELETE /message/{chatId}/{messageId}`
-  - **Description**: Delete a specific message.
+  - **Description**: Delete a specific message. Publishes a `DeleteMessage` event to RabbitMQ and notifies clients via SignalR.
 
 ---
 
@@ -239,6 +240,15 @@ Handles media uploads and downloads, and file storage in a CDN.
     }
     ```
 
+- **Event**: `DeleteMessage`
+- **Payload**:
+    ```json
+    {
+      "messageId": "string",
+      "chatId": "string"
+    }
+    ```
+
 ### `ManagementService` Event
 - **Event**: `UserDeleted`
 - **Payload**:
@@ -248,3 +258,4 @@ Handles media uploads and downloads, and file storage in a CDN.
       "deletedAt": "timestamp"
     }
     ```
+
