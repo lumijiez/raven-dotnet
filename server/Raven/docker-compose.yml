@@ -10,3 +10,9 @@
     build:
       context: .
       dockerfile: Raven.UserService/Dockerfile
+
+  raven.authservice:
+    image: raven.authservice
+    build:
+      context: .
+      dockerfile: Raven.AuthService/Dockerfile
