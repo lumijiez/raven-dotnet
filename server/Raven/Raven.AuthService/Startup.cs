@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using EvolveDb;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Raven.Auth.Data;
+using static System.Console;
 
 namespace Raven.AuthService;
 
@@ -11,6 +14,7 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         EnsureDatabaseCreated();
+        EvolveMigrate();
         
         services.AddDbContext<AuthDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("AuthDatabaseConnection")));
@@ -46,12 +50,14 @@ public class Startup(IConfiguration configuration)
 
     private void EvolveMigrate()
     {
+        var assembly = Assembly.Load("Raven.Auth.Data"); 
         try
         {
             var cnx = new NpgsqlConnection(Configuration.GetConnectionString("AuthDatabaseConnection"));
-            var evolve = new Evolve.Evolve(cnx, msg => Console.WriteLine(msg))
+            var evolve = new Evolve(cnx, WriteLine)
             {
-                Locations = new[] { "db/migrations" },
+                EmbeddedResourceAssemblies = [assembly],
+                EmbeddedResourceFilters = new[] { "Raven.Auth.Data.Migrations" },
                 IsEraseDisabled = true,
             };
 
@@ -59,7 +65,7 @@ public class Startup(IConfiguration configuration)
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("Database migration failed.", ex);
+            WriteLine("Database migration failed.");
             throw;
         }
     }
