@@ -2,7 +2,11 @@
 using EvolveDb;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Raven.Auth.Data;
+using Raven.Auth.Application.Services;
+using Raven.Auth.Domain.Interfaces;
+using Raven.Auth.Domain.Services;
+using Raven.Auth.Infrastructure;
+using Raven.Auth.Infrastructure.Repositories;
 using static System.Console;
 
 namespace Raven.Auth;
@@ -18,7 +22,13 @@ public class Startup(IConfiguration configuration)
         
         services.AddDbContext<AuthDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("AuthDatabaseConnection")));
-        
+
+        services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<AuthService>();
+        services.AddScoped<AuthAppService>();
+        services.AddScoped<IPasswordHasher, PassHashService>();
+
+        services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
     }
@@ -30,6 +40,8 @@ public class Startup(IConfiguration configuration)
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.MapControllers();
     }
     
     private static void EnsureDatabaseCreated()

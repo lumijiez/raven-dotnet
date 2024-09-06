@@ -1,4 +1,4 @@
-﻿using Raven.Auth.Data.Entities;
+﻿using Raven.Auth.Domain.Entities;
 using Raven.Auth.Domain.Interfaces;
 
 namespace Raven.Auth.Domain.Services;

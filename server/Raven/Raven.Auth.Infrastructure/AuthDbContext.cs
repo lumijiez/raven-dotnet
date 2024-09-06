@@ -1,16 +1,12 @@
-﻿using Raven.Auth.Data.Entities;
+﻿using Raven.Auth.Domain.Entities;
 
-namespace Raven.Auth.Data;
+namespace Raven.Auth.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
 
-public class AuthDbContext : DbContext
+public class AuthDbContext(DbContextOptions<AuthDbContext> options) : DbContext(options)
 {
-    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
-    {
-    }
-
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
