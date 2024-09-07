@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AspNet.Security.OAuth.Discord" Version="8.1.0" />
         <PackageReference Include="Evolve" Version="3.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />

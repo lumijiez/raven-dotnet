@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,8 +34,10 @@ public class Startup(IConfiguration configuration)
 
         services.AddAuthentication(options =>
             {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -49,12 +52,23 @@ public class Startup(IConfiguration configuration)
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key))
                 };
             })
-            .AddCookie()
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/oauth/google/login";
+            })
             .AddGoogle(options =>
             {
                 options.ClientId = configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException();
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? throw new InvalidOperationException();
-            });;
+            })
+            .AddDiscord(options =>
+            {
+                options.ClientId = configuration["Authentication:Discord:ClientId"] ?? throw new InvalidOperationException();
+                options.ClientSecret = configuration["Authentication:Discord:ClientSecret"] ?? throw new InvalidOperationException();
+                options.Scope.Add("identify");
+                options.Scope.Add("email");
+                options.CallbackPath = "/oauth/discord/callback";
+            });
         services.AddAuthorization();
             
         services.AddControllers();

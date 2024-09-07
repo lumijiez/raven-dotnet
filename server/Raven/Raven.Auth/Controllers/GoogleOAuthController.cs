@@ -12,7 +12,7 @@
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var redirectUrl = Url.Action("Callback", "GoogleOAuth", null, Request.Scheme);
+            var redirectUrl = Url.Action("Callback");
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
@@ -21,10 +21,19 @@
         public async Task<IActionResult> Callback()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+            
             if (result.Succeeded)
             {
-                return Redirect("/");
+                return Json(claims);
             }
+            
             return RedirectToAction("Login");
         }
 

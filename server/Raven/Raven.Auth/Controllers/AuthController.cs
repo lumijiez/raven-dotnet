@@ -9,6 +9,12 @@ namespace Raven.Auth.Controllers;
 [Route("/")]
 public class AuthController(AuthAppService authAppService, JwtTokenHelper tokenHelper) : ControllerBase
 {
+    [HttpGet("/")]
+    public IActionResult Test()
+    {
+        return Ok("Hehehe");
+    }
+    
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterUserDTO dto)
     {
