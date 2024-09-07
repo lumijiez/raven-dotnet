@@ -6,7 +6,6 @@ namespace Raven.Auth;
 
 public static class StartupUtils
 {
-    
     public static void EvolveMigrate(IConfiguration config)
     {
         EnsureDatabaseCreated();
