@@ -12,16 +12,13 @@
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var redirectUrl = Url.Action("Callback");
-            var properties = new AuthenticationProperties
-            {
-                RedirectUri = redirectUrl
-            };
+            var redirectUrl = Url.Action("Response", "GoogleOAuth", null, Request.Scheme);
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("callback")]
-        public async Task<IActionResult> Callback()
+        [HttpGet("response")]
+        public async Task<IActionResult> Response()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
             var claims = result.Principal?.Identities.FirstOrDefault()
