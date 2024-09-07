@@ -48,7 +48,13 @@ public class Startup(IConfiguration configuration)
                     ValidAudience = _audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key))
                 };
-            });
+            })
+            .AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException();
+                options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? throw new InvalidOperationException();
+            });;
         services.AddAuthorization();
             
         services.AddControllers();
