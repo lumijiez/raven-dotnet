@@ -29,6 +29,8 @@ public class DiscordOAuthController : Controller
             claim.Type,
             claim.Value
         });
+        
+        Console.WriteLine(claims);
             
         if (result.Succeeded)
         {

@@ -13,22 +13,26 @@
         public IActionResult Login()
         {
             var redirectUrl = Url.Action("Callback");
-            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = redirectUrl
+            };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
         [HttpGet("callback")]
         public async Task<IActionResult> Callback()
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var claims = result.Principal?.Identities.FirstOrDefault()
+                ?.Claims.Select(claim => new
             {
                 claim.Issuer,
                 claim.OriginalIssuer,
                 claim.Type,
                 claim.Value
             });
-            
+            Console.WriteLine(claims);
             if (result.Succeeded)
             {
                 return Json(claims);

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Raven.Auth.Application.Services;
@@ -34,7 +35,6 @@ public class Startup(IConfiguration configuration)
 
         services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -54,12 +54,15 @@ public class Startup(IConfiguration configuration)
             })
             .AddCookie(options =>
             {
-                options.LoginPath = "/oauth/google/login";
+                options.Cookie.Name = "AuthCookie";
             })
             .AddGoogle(options =>
             {
                 options.ClientId = configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException();
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? throw new InvalidOperationException();
+                options.CallbackPath = "/oauth/google/callback";
+                
+                options.SaveTokens = true;
             })
             .AddDiscord(options =>
             {
@@ -83,7 +86,7 @@ public class Startup(IConfiguration configuration)
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
