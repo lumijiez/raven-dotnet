@@ -1,4 +1,6 @@
-﻿namespace Raven.Auth.Controllers
+﻿using AspNet.Security.OAuth.GitHub;
+
+namespace Raven.Auth.Controllers
 {
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,21 +8,21 @@
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
 
-    [Route("oauth/google")]
-    public class GoogleOAuthController : Controller
+    [Route("oauth/github")]
+    public class GithubOAuthController : Controller
     {
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var redirectUrl = Url.Action("RespCallback", "GoogleOAuth", null, Request.Scheme);
+            var redirectUrl = Url.Action("RespCallback", "GithubOAuth", null, Request.Scheme);
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            return Challenge(properties, GitHubAuthenticationDefaults.AuthenticationScheme);
         }
 
         [HttpGet("respcallback")]
         public async Task<IActionResult> RespCallback()
         {
-            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var result = await HttpContext.AuthenticateAsync(GitHubAuthenticationDefaults.AuthenticationScheme);
 
             if (!result.Succeeded) return RedirectToAction("Login");
             

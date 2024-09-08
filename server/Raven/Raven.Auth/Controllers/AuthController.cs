@@ -9,12 +9,6 @@ namespace Raven.Auth.Controllers;
 [Route("/")]
 public class AuthController(AuthAppService authAppService, JwtTokenHelper tokenHelper) : ControllerBase
 {
-    [HttpGet("/")]
-    public IActionResult Test()
-    {
-        return Ok("Hehehe");
-    }
-    
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterUserDTO dto)
     {
@@ -35,6 +29,8 @@ public class AuthController(AuthAppService authAppService, JwtTokenHelper tokenH
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpPost("login")]
     
     // To Fix (Not Secure)
     // Does not check validity, creates a token from any input

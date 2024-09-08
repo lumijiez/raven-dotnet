@@ -13,32 +13,30 @@ public class DiscordOAuthController : Controller
     [HttpGet("login")]
     public IActionResult Login()
     {
-        var redirectUrl = Url.Action("Response", "DiscordOAuth", null, Request.Scheme);
+        var redirectUrl = Url.Action("RespCallback", "DiscordOAuth", null, Request.Scheme);
         var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
         return Challenge(properties, DiscordAuthenticationDefaults.AuthenticationScheme);
     }
 
-    [HttpGet("response")]
-    public async Task<IActionResult> Response()
+    [HttpGet("respcallback")]
+    public async Task<IActionResult> RespCallback()
     {
         var result = await HttpContext.AuthenticateAsync(DiscordAuthenticationDefaults.AuthenticationScheme);
+
+        if (!result.Succeeded) return RedirectToAction("Login");
+            
+        var tokens = result.Properties.GetTokens();
+                
         var claims = result.Principal?.Identities.FirstOrDefault()
             ?.Claims.Select(claim => new
-        {
-            claim.Issuer,
-            claim.OriginalIssuer,
-            claim.Type,
-            claim.Value
-        });
-        
-        Console.WriteLine(claims);
-            
-        if (result.Succeeded)
-        {
-            return Json(claims);
-        }
-            
-        return RedirectToAction("Login");
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+                
+        return Json(new { Tokens = tokens, Claims = claims });
     }
 
     [HttpPost("logout")]

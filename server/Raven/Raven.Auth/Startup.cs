@@ -63,8 +63,6 @@ public class Startup(IConfiguration configuration)
                 options.ClientId = configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException();
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? throw new InvalidOperationException();
                 options.CallbackPath = "/oauth/google/callback";
-                
-                options.SaveTokens = true;
             })
             .AddDiscord(options =>
             {
@@ -73,7 +71,13 @@ public class Startup(IConfiguration configuration)
                 options.Scope.Add("identify");
                 options.Scope.Add("email");
                 options.CallbackPath = "/oauth/discord/callback";
-            });
+            })
+            .AddGitHub(options =>
+            {
+                options.ClientId = configuration["Authentication:GitHub:ClientId"] ?? throw new InvalidOperationException();
+                options.ClientSecret = configuration["Authentication:GitHub:ClientSecret"] ?? throw new InvalidOperationException();
+                options.CallbackPath = new PathString("/oauth/github/callback");
+            });;
         services.AddAuthorization();
             
         services.AddControllers();
