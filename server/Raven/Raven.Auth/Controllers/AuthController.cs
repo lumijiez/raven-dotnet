@@ -14,7 +14,19 @@ public class AuthController(AuthAppService authAppService, JwtTokenHelper tokenH
     {
         try
         {
-            authAppService.RegisterUser(dto);
+            var registerIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var registerTimestamp = DateTime.UtcNow;
+
+            var userDto = new RegisterUserDatabaseDTO
+            {
+                Username = dto.Username,
+                Email = dto.Email,
+                Password = dto.Password,
+                RegisterIp = registerIp ?? "0.0.0.0",
+                RegisterTimestamp = registerTimestamp
+            };
+            
+            authAppService.RegisterUser(userDto);
             var token = tokenHelper.GenerateToken(dto.Username);
             var refreshToken = tokenHelper.GenerateRefreshToken();
             

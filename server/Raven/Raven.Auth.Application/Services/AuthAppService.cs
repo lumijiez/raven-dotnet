@@ -5,9 +5,9 @@ namespace Raven.Auth.Application.Services;
 
 public class AuthAppService(AuthService authService)
 {
-    public void RegisterUser(RegisterUserDTO dto)
+    public void RegisterUser(RegisterUserDatabaseDTO dto)
     {
-        authService.RegisterUser(dto.Username, dto.Password, dto.Email);
+        authService.RegisterUser(dto.Username, dto.Password, dto.Email, dto.RegisterIp, dto.RegisterTimestamp);
     }
     
     public bool LoginUser(LoginUserDTO dto)

@@ -5,7 +5,7 @@ namespace Raven.Auth.Domain.Services;
 
 public class AuthService(IAuthRepository authRepository, IPasswordHasher passwordHasher)
 {
-    public void RegisterUser(string username, string password, string email)
+    public void RegisterUser(string username, string password, string email, string registerIp, DateTime registerTimestamp)
     {
         if (authRepository.GetByUsername(username) != null)
         {
@@ -19,7 +19,9 @@ public class AuthService(IAuthRepository authRepository, IPasswordHasher passwor
             Id = Guid.NewGuid(),
             Username = username,
             HashedPassword = hashedPassword,
-            Email = email
+            Email = email,
+            RegisterIp = registerIp,
+            RegisterTimestamp = registerTimestamp
         };
 
         authRepository.Add(user);
