@@ -21,22 +21,26 @@
         public async Task<IActionResult> Response()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded) return RedirectToAction("Login");
+            
+            var tokens = result.Properties.GetTokens();
+            var authenticationTokens = tokens.ToList();
+            var accessToken = authenticationTokens?.FirstOrDefault(t => t.Name == "access_token")?.Value;
+            var idToken = authenticationTokens?.FirstOrDefault(t => t.Name == "id_token")?.Value;
+                
             var claims = result.Principal?.Identities.FirstOrDefault()
                 ?.Claims.Select(claim => new
-            {
-                claim.Issuer,
-                claim.OriginalIssuer,
-                claim.Type,
-                claim.Value
-            });
-            Console.WriteLine(claims);
-            if (result.Succeeded)
-            {
-                return Json(claims);
-            }
-            
-            return RedirectToAction("Login");
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                });
+                
+            return Json(new { AccessToken = accessToken, IdToken = idToken, Claims = claims });
         }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
