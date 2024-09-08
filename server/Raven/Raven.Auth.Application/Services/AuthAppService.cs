@@ -9,4 +9,9 @@ public class AuthAppService(AuthService authService)
     {
         authService.RegisterUser(dto.Username, dto.Password, dto.Email);
     }
+    
+    public bool LoginUser(LoginUserDTO dto)
+    {
+        return authService.LoginUser(dto.Username, dto.Password);
+    }
 }

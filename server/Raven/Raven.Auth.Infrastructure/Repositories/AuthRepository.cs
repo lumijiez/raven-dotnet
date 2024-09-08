@@ -15,6 +15,11 @@ public class AuthRepository(AuthDbContext context) : IAuthRepository
         return context.users.SingleOrDefault(u => u.Email == email);
     }
 
+    public string? GetHashByUsername(string username)
+    {
+        return context.users.SingleOrDefault(u => u.Username == username)?.HashedPassword;
+    }
+
     public void Add(User user)
     {
         context.users.Add(user);

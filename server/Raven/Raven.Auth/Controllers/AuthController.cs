@@ -31,6 +31,27 @@ public class AuthController(AuthAppService authAppService, JwtTokenHelper tokenH
     }
     
     [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginUserDTO dto)
+    {
+        try
+        {
+            if (!authAppService.LoginUser(dto)) return Unauthorized();
+            
+            var token = tokenHelper.GenerateToken(dto.Username);
+            var refreshToken = tokenHelper.GenerateRefreshToken();
+            
+            return Ok(new
+            {
+                Token = token,
+                RefreshToken = refreshToken
+            });
+
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
     
     // To Fix (Not Secure)
     // Does not check validity, creates a token from any input

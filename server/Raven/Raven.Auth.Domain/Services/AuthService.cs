@@ -24,4 +24,15 @@ public class AuthService(IAuthRepository authRepository, IPasswordHasher passwor
 
         authRepository.Add(user);
     }
+
+    public bool LoginUser(string username, string password)
+    {
+        var user = authRepository.GetByUsername(username);
+        
+        if (user == null) return false;
+        
+        var hashedPassword = passwordHasher.HashPassword(password);
+
+        return hashedPassword == user.HashedPassword;
+    }
 }
