@@ -31,10 +31,6 @@ public class AuthService(IAuthRepository authRepository, IPasswordHasher passwor
     {
         var user = authRepository.GetByUsername(username);
         
-        if (user == null) return false;
-        
-        var hashedPassword = passwordHasher.HashPassword(password);
-
-        return hashedPassword == user.HashedPassword;
+        return user != null && passwordHasher.VerifyPassword(user.HashedPassword, password);
     }
 }
