@@ -16,3 +16,9 @@
     build:
       context: .
       dockerfile: Raven.AuthService/Dockerfile
+
+  raven.messaging:
+    image: raven.messaging
+    build:
+      context: .
+      dockerfile: Raven.Messaging/Dockerfile
