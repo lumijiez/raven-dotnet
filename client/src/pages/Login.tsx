@@ -1,7 +1,11 @@
-import React from "react";
+import { LoginForm } from "../components/auth";
 
 const Login = () => {
-  return <div>Login</div>;
+  return (
+    <div className="bg-blue-light h-screen">
+      <LoginForm />
+    </div>
+  );
 };
 
 export default Login;
