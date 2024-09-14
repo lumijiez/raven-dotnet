@@ -14,8 +14,11 @@ import { z } from "zod";
 
 import { FiUser, FiLock, FiMail } from "react-icons/fi";
 import { PiBird } from "react-icons/pi";
+import { useRegisterUserMutation } from "@/features/auth/authAPI";
 
 export const RegisterForm = () => {
+  const [registerUser] = useRegisterUserMutation();
+
   const registerFormSchema = z
     .object({
       username: z
@@ -59,10 +62,29 @@ export const RegisterForm = () => {
   });
 
   //TO DO: implement onsubmit logic
-  const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
-    alert(JSON.stringify(values, null, 2));
+  // const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
+  //   alert(JSON.stringify(values, null, 2));
 
-    registerForm.reset();
+  //   registerForm.reset();
+  // };
+
+  const onSubmit = async (data: z.infer<typeof registerFormSchema>) => {
+    if (data.password !== data.confirmPassword) {
+      console.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      await registerUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+      console.log("Registration successful");
+      // Handle success like redirecting
+    } catch (err) {
+      console.error("Failed to register:", err);
+    }
   };
 
   return (

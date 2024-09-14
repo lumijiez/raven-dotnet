@@ -15,7 +15,16 @@ import { z } from "zod";
 import { FiUser, FiLock } from "react-icons/fi";
 import { PiBird } from "react-icons/pi";
 
+import { useLoginUserMutation } from "../../features/auth/authAPI";
+
+// type LoginFormInputs = {
+//   username: string;
+//   password: string;
+// };
+
 export const LoginForm = () => {
+  const [loginUser] = useLoginUserMutation();
+
   const loginFormSchema = z.object({
     username: z
       .string()
@@ -50,10 +59,19 @@ export const LoginForm = () => {
   });
 
   //TO DO: implement onsubmit logic
-  const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
-    alert(JSON.stringify(values, null, 2));
+  // const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
+  //   alert(JSON.stringify(values, null, 2));
 
-    loginForm.reset();
+  //   loginForm.reset();
+  // };
+  const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+    try {
+      const response = await loginUser(data).unwrap();
+      console.log("Login successful:", response);
+      // Handle success, like saving the token or redirecting
+    } catch (err) {
+      console.error("Failed to login:", err);
+    }
   };
 
   return (
