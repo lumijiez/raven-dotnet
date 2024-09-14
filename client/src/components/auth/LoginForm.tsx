@@ -1,15 +1,113 @@
 import React from "react";
 import { PiBird } from "react-icons/pi";
-// import { FiUser, FiLock } from "react-icons/fi";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { FiUser, FiLock } from "react-icons/fi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const LoginForm = () => {
+  const loginFormSchema = z.object({
+    username: z
+      .string()
+      .min(2, { message: "Username must be at least 2 characters long" })
+      .max(50, {
+        message: "Username must be no more than 10 characters long.",
+      }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" }) // minimum length of 8 characters
+      .max(100, {
+        message: "Password must be no more than 100 characters long",
+      })
+      .regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/\d/, { message: "Password must contain at least one number" })
+      .regex(/[@$!%*?&#]/, {
+        message: "Password must contain at least one special character",
+      }),
+  });
+
+  const loginForm = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  //TO DO: implement onsubmit logic
+  const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
+    alert(JSON.stringify(values));
+
+    loginForm.reset();
+  };
+
   return (
     <div className="flex justify-center items-center h-screen">
-      <div>
+      <div className="w-[400px]">
         <div className="flex justify-center items-center mb-[10px]">
           <PiBird className="w-[70px] h-[70px] text-blue-base" />
         </div>
-        <div className="space-y-[15px]"></div>
+        <div>
+          <Form {...loginForm}>
+            <form
+              onSubmit={loginForm.handleSubmit(onSubmit)}
+              className="space-y-[12px]"
+            >
+              <FormField
+                control={loginForm.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        icon={<FiUser />}
+                        placeholder="Username"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={loginForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        icon={<FiLock />}
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button className="w-full" type="submit">
+                Submit
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
     </div>
   );
