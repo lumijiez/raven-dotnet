@@ -1,6 +1,3 @@
-import React from "react";
-import { PiBird } from "react-icons/pi";
-
 import {
   Form,
   FormControl,
@@ -11,10 +8,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { FiUser, FiLock } from "react-icons/fi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { FiUser, FiLock } from "react-icons/fi";
+import { PiBird } from "react-icons/pi";
 
 export const LoginForm = () => {
   const loginFormSchema = z.object({
@@ -52,7 +51,7 @@ export const LoginForm = () => {
 
   //TO DO: implement onsubmit logic
   const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
-    alert(JSON.stringify(values));
+    alert(JSON.stringify(values, null, 2));
 
     loginForm.reset();
   };
@@ -79,6 +78,8 @@ export const LoginForm = () => {
                         icon={<FiUser />}
                         placeholder="Username"
                         {...field}
+                        {...loginForm.register("username")}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -96,6 +97,8 @@ export const LoginForm = () => {
                         type="password"
                         placeholder="Password"
                         {...field}
+                        {...loginForm.register("password")}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -103,7 +106,7 @@ export const LoginForm = () => {
                 )}
               />
               <Button className="w-full" type="submit">
-                Submit
+                Log in
               </Button>
             </form>
           </Form>
