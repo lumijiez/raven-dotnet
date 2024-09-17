@@ -1,3 +1,5 @@
+using Duende.IdentityServer.Stores;
+using Identity.Pages;
 using Serilog;
 
 namespace Identity;
@@ -6,14 +8,13 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        // uncomment if you want to add a UI
         builder.Services.AddRazorPages();
 
         builder.Services.AddIdentityServer(options =>
             {
-                // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
                 options.EmitStaticAudienceClaim = true;
             })
+            .AddDeveloperSigningCredential()
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
@@ -30,14 +31,12 @@ internal static class HostingExtensions
         {
             app.UseDeveloperExceptionPage();
         }
-
-        // uncomment if you want to add a UI
+        
         app.UseStaticFiles();
         app.UseRouting();
 
         app.UseIdentityServer();
-
-        // uncomment if you want to add a UI
+        
         app.UseAuthorization();
         app.MapRazorPages().RequireAuthorization();
 

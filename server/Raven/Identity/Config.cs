@@ -6,22 +6,19 @@ namespace Identity;
 public static class Config
 {
     public static IEnumerable<IdentityResource> IdentityResources =>
-        new IdentityResource[]
-        {
-            new IdentityResources.OpenId(),
+    [
+        new IdentityResources.OpenId(),
             new IdentityResources.Profile()
-        };
+    ];
 
     public static IEnumerable<ApiScope> ApiScopes =>
-        new ApiScope[]
-        {
-            new ApiScope(name: "message-service", "Messaging API")
-        };
+    [
+        new(name: "message", "Messaging API")
+    ];
 
     public static IEnumerable<Client> Clients =>
-        new Client[]
-        {
-            new Client()
+    [
+        new()
             {
                ClientId = "client",
                AllowedGrantTypes = GrantTypes.ClientCredentials,
@@ -29,10 +26,10 @@ public static class Config
                {
                    new Secret("secret".Sha256())
                },
-               AllowedScopes = { "message-service" }
+               AllowedScopes = { "message" }
             },
-            new Client
-            {
+            new()
+        {
                 ClientId = "web",
                 ClientSecrets =
                 {
@@ -45,8 +42,8 @@ public static class Config
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    "message-service"
+                    "message"
                 }
             }
-        };
+    ];
 }

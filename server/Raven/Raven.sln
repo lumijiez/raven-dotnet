@@ -6,10 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService", "MessageService\MessageService.csproj", "{800CC11F-3128-4029-9314-261144FEF19D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{45905F3D-1C41-4968-A410-39BCA1270F03}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebClient.csproj", "{7CCCC624-DCDD-4B80-ADA4-972282A96CF7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,14 +20,6 @@ Global
 		{800CC11F-3128-4029-9314-261144FEF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{800CC11F-3128-4029-9314-261144FEF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{800CC11F-3128-4029-9314-261144FEF19D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45905F3D-1C41-4968-A410-39BCA1270F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45905F3D-1C41-4968-A410-39BCA1270F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45905F3D-1C41-4968-A410-39BCA1270F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45905F3D-1C41-4968-A410-39BCA1270F03}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CCCC624-DCDD-4B80-ADA4-972282A96CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CCCC624-DCDD-4B80-ADA4-972282A96CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CCCC624-DCDD-4B80-ADA4-972282A96CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CCCC624-DCDD-4B80-ADA4-972282A96CF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
