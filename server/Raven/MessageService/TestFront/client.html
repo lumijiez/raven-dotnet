@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalR Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, button { padding: 8px; font-size: 16px; }
+        button { cursor: pointer; }
+        #messages { margin-top: 20px; }
+        .message { padding: 5px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SignalR Client</h1>
+    <div class="form-group">
+        <label for="token">Access Token:</label>
+        <input type="text" id="token" placeholder="Enter access token">
+    </div>
+    <button id="connect">Connect to SignalR</button>
+    <div class="form-group">
+        <label for="sosId">User ID:</label>
+        <input type="number" id="sosId" placeholder="Enter User ID">
+    </div>
+    <div class="form-group">
+        <label for="msg">Message:</label>
+        <input type="text" id="msg" placeholder="Enter Message">
+    </div>
+    <button id="sendSOS">Send Msg</button>
+    <div id="messages"></div>
+</div>
+
+<script>
+    let connection;
+
+    document.getElementById('connect').addEventListener('click', async () => {
+        const token = document.getElementById('token').value;
+
+        if (!token) {
+            alert('Please enter an access token.');
+            return;
+        }
+
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl('https://localhost:6001/chat', {
+                accessTokenFactory: () => token
+            })
+            .build();
+
+        connection.on('ReceiveMessage', (user, message) => {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `${user}: ${message}`;
+            messagesDiv.appendChild(messageDiv);
+        });
+
+        try {
+            await connection.start();
+            console.log('Connected to SignalR hub');
+        } catch (err) {
+            console.error('Error connecting to SignalR hub:', err);
+        }
+    });
+
+    document.getElementById('sendSOS').addEventListener('click', async () => {
+        const sosId = document.getElementById('sosId').value;
+        const sosMsg = document.getElementById('msg').value;
+
+        if (!sosId) {
+            alert('Please enter an SOS ID.');
+            return;
+        }
+
+        try {
+            await connection.invoke('SendMsg', sosId, sosMsg);
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `YOU: ${sosMsg}`;
+            messagesDiv.appendChild(messageDiv);
+        } catch (err) {
+            console.error('Error sending SOS:', err);
+        }
+    });
+</script>
+</body>
+</html>
