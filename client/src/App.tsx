@@ -1,17 +1,8 @@
-// src/App.tsx
-import ContactsSidebar from "./components/chat/ContactsSidebar";
-import MoreMenu from "./components/MoreMenu";
-//import SearchBar from "./components/SearchBar"; // Import the SearchBar component
+import { RouterProvider } from "react-router-dom";
+import { routes } from "./routes/routes";
 
 function App() {
-  return (
-    <>
-      <div className="p-4">
-        <MoreMenu/>
-         <ContactsSidebar/>
-      </div>
-    </>
-  );
+  return <RouterProvider router={routes} />;
 }
 
 export default App;
