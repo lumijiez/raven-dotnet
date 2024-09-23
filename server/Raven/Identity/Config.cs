@@ -8,7 +8,12 @@ public static class Config
     public static IEnumerable<IdentityResource> IdentityResources =>
     [
         new IdentityResources.OpenId(),
-            new IdentityResources.Profile()
+        new IdentityResources.Profile(),
+        new IdentityResources.Email(),
+        new()
+        {
+            UserClaims = ["email"]
+        }
     ];
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -42,8 +47,10 @@ public static class Config
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
                     "message"
-                }
+                },
+                AlwaysSendClientClaims = true
             }
     ];
 }

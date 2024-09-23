@@ -1,70 +1,16 @@
-using System.Security.Claims;
 using MessageService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+var env = builder.Environment;
+var config = builder.Configuration;
+var services = builder.Services;
 
-builder.Services.AddAuthentication()
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://localhost:5001";
-        options.TokenValidationParameters.ValidateAudience = false;
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
+var startup = new Startup(config);
 
-                var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    path.StartsWithSegments("/chat"))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            }
-        };
-    });
-
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("ApiScope", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "message");
-    });
-
-builder.Services.AddSignalR();
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+startup.ConfigureServices(services);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true)
-    .AllowCredentials());
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapHub<ChatHub>("/chat");
-
-app.MapGet("identity", (ClaimsPrincipal user) => 
-    user.Claims.Select(c => new {c.Type, c.Value})).RequireAuthorization("ApiScope");
-
-app.MapControllers();
+Startup.Configure(app, env);
 
 app.Run();

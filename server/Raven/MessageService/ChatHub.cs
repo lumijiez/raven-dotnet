@@ -1,8 +1,10 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MessageService;
 
+[Authorize]
 public class ChatHub : Hub
 {
     private static readonly ConcurrentDictionary<string, string> UserConnectionMap = new();

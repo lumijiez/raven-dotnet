@@ -27,7 +27,7 @@ app.use(bodyParser.json());
         grant_type: 'password',
         username,
         password,
-        scope: 'openid profile message',
+        scope: 'openid profile email message',
       });
 
       console.log(tokenSet);
