@@ -1,6 +1,6 @@
-namespace MessageService.Domain;
+namespace MessageService.Infrastructure;
 
-public class MongoDbSettings
+public class MongoDBSettings
 {
     public string ConnectionString { get; set; }
     public string DatabaseName { get; set; }

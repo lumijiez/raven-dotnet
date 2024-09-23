@@ -1,12 +1,18 @@
 using System.Collections.Concurrent;
+using Duende.IdentityServer.Models;
+using MessageService.Application;
+using MessageService.Application.Services;
+using MessageService.Domain.Entities;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 
 namespace MessageService;
 
 [Authorize]
-public class ChatHub : Hub
+public class ChatHub(MessageHandler messageHandler) : Hub
 {
+    private MessageHandler _messageHandler = messageHandler;
+
     private static readonly ConcurrentDictionary<string, string> UserConnectionMap = new();
     
     public override async Task OnConnectedAsync()
@@ -34,6 +40,11 @@ public class ChatHub : Hub
         if (UserConnectionMap.TryGetValue(receiverId, out string connectionId))
         {
             await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.UserIdentifier, message);
+            await messageHandler.AddMessage(new Message
+            {
+                Text = message,
+                Timestamp = DateTime.Now
+            });
         }
         else
         {

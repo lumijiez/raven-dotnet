@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using MessageService.Application;
+using MessageService.Application.Services;
+using MessageService.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace MessageService;
@@ -8,6 +11,15 @@ public class Startup(IConfiguration configuration)
     
     public void ConfigureServices(IServiceCollection services)
     {
+        services.Configure<MongoDBSettings>(
+            configuration.GetSection(nameof(MongoDBSettings)));
+        
+        services.AddSingleton<MongoContext>();
+
+        services.AddSingleton<MessageHandler>();
+        services.AddSingleton<ChatHandler>();
+        services.AddSingleton<UserChatHandler>();
+        
         services.AddAuthentication()
             .AddJwtBearer(options =>
             {
