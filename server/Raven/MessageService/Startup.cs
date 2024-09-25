@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using MessageService.Application;
+using MessageService.Application.Handlers;
 using MessageService.Application.Services;
 using MessageService.Infrastructure;
+using MessageService.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace MessageService;
@@ -16,9 +18,11 @@ public class Startup(IConfiguration configuration)
         
         services.AddSingleton<MongoContext>();
 
-        services.AddSingleton<MessageHandler>();
-        services.AddSingleton<ChatHandler>();
-        services.AddSingleton<UserChatHandler>();
+        services.AddScoped<MessageHandler>();
+        services.AddScoped<ChatHandler>();
+        services.AddScoped<UserChatHandler>();
+        
+        services.AddScoped<ChatService>();
         
         services.AddAuthentication()
             .AddJwtBearer(options =>

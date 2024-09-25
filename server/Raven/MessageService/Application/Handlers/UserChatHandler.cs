@@ -2,13 +2,13 @@ using MessageService.Domain.Entities;
 using MessageService.Infrastructure;
 using MongoDB.Driver;
 
-namespace MessageService.Application.Services;
+namespace MessageService.Application.Handlers;
 
 public class UserChatHandler(MongoContext context)
 {
     private readonly IMongoCollection<UserChat> _userChats = context.GetCollection<UserChat>("UserChats");
 
-    public async Task AddChat(string userId, string chatId)
+    public async Task BindUserToChatAsync(string userId, string chatId)
     {
         var userChat = await _userChats.Find(uc => uc.UserId == userId).FirstOrDefaultAsync();
 

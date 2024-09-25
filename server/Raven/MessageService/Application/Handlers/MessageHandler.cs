@@ -2,7 +2,7 @@ using MessageService.Domain.Entities;
 using MessageService.Infrastructure;
 using MongoDB.Driver;
 
-namespace MessageService.Application.Services;
+namespace MessageService.Application.Handlers;
 
 public class MessageHandler(MongoContext context)
 {

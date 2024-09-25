@@ -1,9 +1,5 @@
 namespace MessageService.Domain.Entities;
 
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Collections.Generic;
-
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 

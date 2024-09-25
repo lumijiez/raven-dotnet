@@ -12,5 +12,11 @@ public class Message
     [BsonElement("Text")]
     public string Text { get; set; }
 
+    [BsonElement("ReceiverId")]
+    public string ReceiverId { get; set; }
+
+    [BsonElement("ChatId")]
+    public string ChatId { get; set; }
+
     public DateTime Timestamp { get; set; }
 }

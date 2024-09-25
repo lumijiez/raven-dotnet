@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class Chat
 {
     [BsonId]
-   // [BsonRepresentation(BsonType.ObjectId)]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string ChatId { get; set; }
 
     [BsonElement("Participants")]

@@ -1,12 +1,10 @@
 using System.Collections.Concurrent;
-using Duende.IdentityServer.Models;
-using MessageService.Application;
-using MessageService.Application.Services;
+using MessageService.Application.Handlers;
 using MessageService.Domain.Entities;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
-namespace MessageService;
+namespace MessageService.SignalR;
 
 [Authorize]
 public class ChatHub(MessageHandler messageHandler) : Hub
