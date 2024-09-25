@@ -1,15 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raven", "Raven.Gateway\Raven.Gateway.csproj", "{0EEAEA1F-BA6D-4951-A05A-FCE0A46CF7FA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5684EAE-9BA7-447F-9F7F-A6072F0401AE}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{AE16C6C4-C14E-4663-8E87-41B9F115BBBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identity.csproj", "{8C7795A9-15C7-4564-A7A2-CBCA400E8F06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raven.UserService", "Raven.UserService\Raven.UserService.csproj", "{445DA71E-7C4C-4DC4-947F-9DEFC86667DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService", "MessageService\MessageService.csproj", "{800CC11F-3128-4029-9314-261144FEF19D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,16 +12,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0EEAEA1F-BA6D-4951-A05A-FCE0A46CF7FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EEAEA1F-BA6D-4951-A05A-FCE0A46CF7FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EEAEA1F-BA6D-4951-A05A-FCE0A46CF7FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EEAEA1F-BA6D-4951-A05A-FCE0A46CF7FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{445DA71E-7C4C-4DC4-947F-9DEFC86667DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{445DA71E-7C4C-4DC4-947F-9DEFC86667DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{445DA71E-7C4C-4DC4-947F-9DEFC86667DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{445DA71E-7C4C-4DC4-947F-9DEFC86667DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C7795A9-15C7-4564-A7A2-CBCA400E8F06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C7795A9-15C7-4564-A7A2-CBCA400E8F06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C7795A9-15C7-4564-A7A2-CBCA400E8F06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C7795A9-15C7-4564-A7A2-CBCA400E8F06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800CC11F-3128-4029-9314-261144FEF19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800CC11F-3128-4029-9314-261144FEF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800CC11F-3128-4029-9314-261144FEF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800CC11F-3128-4029-9314-261144FEF19D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{445DA71E-7C4C-4DC4-947F-9DEFC86667DB} = {AE16C6C4-C14E-4663-8E87-41B9F115BBBA}
 	EndGlobalSection
 EndGlobal
