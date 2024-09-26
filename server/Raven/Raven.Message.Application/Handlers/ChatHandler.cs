@@ -40,5 +40,11 @@ public class ChatHandler(MongoContext context)
             await _chats.InsertOneAsync(newChat);
         }
     }
+    
+    public async Task<Chat> GetChatDetailsAsync(string chatId)
+    {
+        var chat = await _chats.Find(c => c.ChatId == chatId).FirstOrDefaultAsync();
+        return chat;
+    }
 
 }

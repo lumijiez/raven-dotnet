@@ -18,7 +18,7 @@ public class ChatController(ChatService chatService) : ControllerBase
     [HttpGet("list")]
     public async Task<IActionResult> GetChatList()
     {
-        return Ok(await chatService.GetChatList(UserId));
+        return Ok(await chatService.GetChatsAsync(UserId));
     }
 
     [HttpPost("create")]

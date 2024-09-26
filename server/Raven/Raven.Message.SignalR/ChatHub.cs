@@ -2,14 +2,13 @@ using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Raven.Message.Application.Handlers;
+using Raven.Message.Application.Services;
 
 namespace Raven.Message.SignalR;
 
 [Authorize]
-public class ChatHub(MessageHandler messageHandler) : Hub
+public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : Hub
 {
-    private MessageHandler _messageHandler = messageHandler;
-
     private static readonly ConcurrentDictionary<string, string> UserConnectionMap = new();
     
     public override async Task OnConnectedAsync()
@@ -32,22 +31,28 @@ public class ChatHub(MessageHandler messageHandler) : Hub
         await Clients.Client(receiverId).SendAsync("ReceiveMessage", "System", "You have successfully joined the chat hub.");
     }
     
-    public async Task SendMsg(string receiverId, string message)
+    public async Task SendMsg(string chatId, string message)
     {
-        if (UserConnectionMap.TryGetValue(receiverId, out string connectionId))
+        var participants = await chatHandler.GetChatDetailsAsync(chatId);
+        
+        foreach (var participantId in participants.Participants)
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.UserIdentifier, message);
-            await messageHandler.AddMessage(new Domain.Entities.Message
+            if (UserConnectionMap.TryGetValue(participantId, out string connectionId))
             {
-                Text = message,
-                Timestamp = DateTime.Now
-            });
-        }
-        else
-        {
-            Console.WriteLine($"No user with ID {receiverId} is connected.");
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.UserIdentifier, message);
+                await messageHandler.AddMessage(new Domain.Entities.Message
+                {
+                    Text = message,
+                    Timestamp = DateTime.Now
+                });
+            }
+            else
+            {
+                Console.WriteLine($"No user with ID {participantId} is connected.");
+            }
         }
     }
+
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
