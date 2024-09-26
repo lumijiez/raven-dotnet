@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="TestFront\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Raven.Message.Application\Raven.Message.Application.csproj" />
       <ProjectReference Include="..\Raven.Message.Infrastructure\Raven.Message.Infrastructure.csproj" />
       <ProjectReference Include="..\Raven.Message.SignalR\Raven.Message.SignalR.csproj" />

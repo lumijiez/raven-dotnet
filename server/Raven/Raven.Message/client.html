@@ -22,20 +22,31 @@
 <body>
 <div class="container">
     <h1>SignalR Client</h1>
+
+    <h2>Login</h2>
+    <div class="form-group">
+        <button id="loginBob">Login as Bob</button>
+        <button id="loginAlice">Login as Alice</button>
+    </div>
+
     <div class="form-group">
         <label for="token">Access Token:</label>
-        <input type="text" id="token" placeholder="Enter access token">
+        <input type="text" id="token" placeholder="Enter access token" readonly>
     </div>
+
     <button id="connect">Connect to Hub</button>
-    <span id="status" class="status">✔</span> 
+    <span id="status" class="status">✔</span>
+
     <div class="form-group">
         <label for="id">User ID:</label>
         <input type="number" id="id" placeholder="Enter User ID">
     </div>
+
     <div class="form-group">
         <label for="msg">Message:</label>
         <input type="text" id="msg" placeholder="Enter Message">
     </div>
+
     <button id="sendMsg">Send Msg</button>
     <div id="messages"></div>
 </div>
@@ -43,14 +54,42 @@
 <script>
     let connection;
 
-    document.getElementById('connect').addEventListener('click', async () => {
-        const token = document.getElementById('token').value;
+    async function getAccessToken(username, password) {
+        const response = await fetch('http://localhost:3001/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
 
-        if (!token) {
-            alert('Please enter an access token.');
-            return;
+        if (response.ok) {
+            const data = await response.json();
+            return data.access_token;
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.message);
+            return null;
         }
+    }
 
+    document.getElementById('loginBob').addEventListener('click', async () => {
+        const token = await getAccessToken('bob', 'bob');
+        if (token) {
+            document.getElementById('token').value = token;
+            connectToSignalR(token);
+        }
+    });
+
+    document.getElementById('loginAlice').addEventListener('click', async () => {
+        const token = await getAccessToken('alice', 'alice');
+        if (token) {
+            document.getElementById('token').value = token;
+            connectToSignalR(token);
+        }
+    });
+
+    async function connectToSignalR(token) {
         connection = new signalR.HubConnectionBuilder()
             .withUrl('https://localhost:6001/chat', {
                 accessTokenFactory: () => token
@@ -68,10 +107,10 @@
         connection.onclose(() => {
             console.log('Connection closed');
             const statusElement = document.getElementById('status');
-            statusElement.textContent = '✖'; 
+            statusElement.textContent = '✖';
             statusElement.classList.remove('success');
             statusElement.classList.add('error');
-            statusElement.style.visibility = 'visible'; 
+            statusElement.style.visibility = 'visible';
         });
 
         try {
@@ -81,16 +120,16 @@
             statusElement.textContent = '✔';
             statusElement.classList.remove('error');
             statusElement.classList.add('success');
-            statusElement.style.visibility = 'visible'; 
+            statusElement.style.visibility = 'visible';
         } catch (err) {
             console.error('Error connecting to SignalR hub:', err);
             const statusElement = document.getElementById('status');
-            statusElement.textContent = '✖'; 
+            statusElement.textContent = '✖';
             statusElement.classList.remove('success');
             statusElement.classList.add('error');
-            statusElement.style.visibility = 'visible'; 
+            statusElement.style.visibility = 'visible';
         }
-    });
+    }
 
     document.getElementById('sendMsg').addEventListener('click', async () => {
         const id = document.getElementById('id').value;
