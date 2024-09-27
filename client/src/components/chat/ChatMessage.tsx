@@ -11,7 +11,7 @@ interface ChatMessageProps {
 } 
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ avatar, name, message, time, notificationCount,  }) => {
-  // Convert time to a readable string format
+
   const formattedTime = format(new Date(time), 'hh:mm a');
 
   return (

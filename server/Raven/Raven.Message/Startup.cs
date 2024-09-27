@@ -21,8 +21,10 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<MessageHandler>();
         services.AddScoped<ChatHandler>();
         services.AddScoped<UserChatHandler>();
+        services.AddScoped<UserHandler>();
         
         services.AddScoped<ChatService>();
+        services.AddScoped<UserService>();
         
         services.AddAuthentication()
             .AddJwtBearer(options =>

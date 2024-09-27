@@ -2,14 +2,13 @@ using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Raven.Message.Application.Handlers;
-using Raven.Message.Application.Services;
 
 namespace Raven.Message.SignalR;
 
 [Authorize]
 public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : Hub
 {
-    private static readonly ConcurrentDictionary<string, string> UserConnectionMap = new();
+    private static readonly ConcurrentDictionary<string, string?> UserConnectionMap = new();
     
     public override async Task OnConnectedAsync()
     {
@@ -37,7 +36,7 @@ public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : H
         
         foreach (var participantId in participants.Participants)
         {
-            if (UserConnectionMap.TryGetValue(participantId, out string connectionId))
+            if (UserConnectionMap.TryGetValue(participantId, out var connectionId))
             {
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.UserIdentifier, message);
                 await messageHandler.AddMessage(new Domain.Entities.Message
@@ -56,7 +55,7 @@ public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : H
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        string userId = Context.UserIdentifier;
+        var userId = Context.UserIdentifier;
         UserConnectionMap.TryRemove(userId, out _);
 
         Console.WriteLine(userId + " left the chat hub.");
