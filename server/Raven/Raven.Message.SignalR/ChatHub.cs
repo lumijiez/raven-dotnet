@@ -34,11 +34,13 @@ public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : H
     {
         var participants = await chatHandler.GetChatDetailsAsync(chatId);
         
+        Console.WriteLine($"{Context.UserIdentifier}: {chatId}: {message}");
+        
         foreach (var participantId in participants.Participants)
         {
             if (UserConnectionMap.TryGetValue(participantId, out var connectionId))
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.UserIdentifier, message);
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", chatId, Context.UserIdentifier, message);
                 await messageHandler.AddMessage(new Domain.Entities.Message
                 {
                     Text = message,
