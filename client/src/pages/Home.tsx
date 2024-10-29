@@ -8,7 +8,8 @@ import { CardsChat } from "@/components/chat/CardsChat";
 
 const Home = () => {
   return (
-    <div style = {{height: 100+"vh"}}>
+    // <div style={{ height: 100 + "vh" }}>
+    <div className="container mx-auto my-[30px]">
       {/* Header */}
       <header className="flex items-center p-4">
         <MoreMenu />

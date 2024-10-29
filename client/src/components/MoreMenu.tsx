@@ -1,5 +1,6 @@
 import * as React from "react";
-import { IoMenu } from "react-icons/io5";
+// import { IoMenu } from "react-icons/io5";
+import { FiMenu } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,8 +22,8 @@ const MoreMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
-          <IoMenu />
+        <Button variant="ghost" className="focus-visible:outline-none">
+          <FiMenu className="w-[30px] h-[30px] text-blue-base" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -33,7 +34,10 @@ const MoreMenu = () => {
           <DropdownMenuItem>Contacts</DropdownMenuItem>
           <DropdownMenuItem>Calls</DropdownMenuItem>
           <DropdownMenuItem>
-            <div className="flex items-center justify-between w-full" onClick={handleClick}>
+            <div
+              className="flex items-center justify-between w-full"
+              onClick={handleClick}
+            >
               Night Mode
               <Switch />
             </div>

@@ -6,10 +6,29 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const users = [
   {
@@ -68,7 +87,7 @@ export function CardsChat() {
 
   return (
     <>
-    <div>
+      <div>
         {/* Header */}
         <CardHeader className="flex flex-row items-center">
           <div className="flex items-center space-x-4">
@@ -138,7 +157,7 @@ export function CardsChat() {
             <Input
               id="message"
               placeholder="Type your message..."
-              className="flex-1"
+              className="flex-1 !focus:border-transparent !focus:ring-0"
               autoComplete="off"
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -149,7 +168,7 @@ export function CardsChat() {
             </Button>
           </form>
         </CardFooter>
-        </div>
+      </div>
 
       {/* New Message Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -157,7 +176,8 @@ export function CardsChat() {
           <DialogHeader className="px-4 pb-4 pt-5">
             <DialogTitle>New message</DialogTitle>
             <DialogDescription>
-              Invite a user to this thread. This will create a new group message.
+              Invite a user to this thread. This will create a new group
+              message.
             </DialogDescription>
           </DialogHeader>
           <Command className="overflow-hidden rounded-t-none border-t">
@@ -186,8 +206,12 @@ export function CardsChat() {
                       <AvatarFallback>{user.name[0]}</AvatarFallback>
                     </Avatar>
                     <div className="ml-2">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <p className="text-sm font-medium leading-none">
+                        {user.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
                     </div>
                     {selectedUsers.includes(user) && (
                       <Check className="ml-auto flex h-5 w-5 text-primary" />
@@ -201,7 +225,10 @@ export function CardsChat() {
             {selectedUsers.length > 0 ? (
               <div className="flex -space-x-2 overflow-hidden">
                 {selectedUsers.map((user) => (
-                  <Avatar key={user.email} className="inline-block border-2 border-background">
+                  <Avatar
+                    key={user.email}
+                    className="inline-block border-2 border-background"
+                  >
                     <AvatarImage src={user.avatar} />
                     <AvatarFallback>{user.name[0]}</AvatarFallback>
                   </Avatar>
