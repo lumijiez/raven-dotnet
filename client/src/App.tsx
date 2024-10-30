@@ -1,9 +1,9 @@
+
+import { RouterProvider } from "react-router-dom";
+import { routes } from "./routes/routes";
+
 function App() {
-  return (
-    <>
-      <div className="bg-fuchsia-300">Sall cf</div>
-    </>
-  );
+  return <RouterProvider router={routes} />;
 }
 
 export default App;

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalR Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, button { padding: 8px; font-size: 16px; }
+        button { cursor: pointer; }
+        #messages { margin-top: 20px; }
+        .message { padding: 5px; border-bottom: 1px solid #ddd; }
+        .status { display: inline-block; margin-left: 10px; font-size: 20px; visibility: hidden; }
+        .status.success { color: green; }
+        .status.error { color: red; }
+        .chat-list { margin-top: 20px; }
+        .chat-list-item { cursor: pointer; padding: 5px; border: 1px solid #ddd; margin: 2px 0; }
+        .chat-list-item.selected { background-color: #e0e0e0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SignalR Client</h1>
+
+    <h2>Login</h2>
+    <div class="form-group">
+        <button id="loginBob">Login as Bob</button>
+        <button id="loginAlice">Login as Alice</button>
+    </div>
+
+    <div class="form-group">
+        <label for="token">Access Token:</label>
+        <input type="text" id="token" placeholder="Enter access token" readonly>
+    </div>
+
+    <button id="connect">Connect to Hub</button>
+    <span id="status" class="status">✔</span>
+
+    <h2>Chat List</h2>
+    <div id="chatList" class="chat-list"></div>
+
+    <div class="form-group">
+        <label for="msg">Message:</label>
+        <input type="text" id="msg" placeholder="Enter Message">
+    </div>
+
+    <button id="sendMsg">Send Msg</button>
+    <div id="messages"></div>
+</div>
+
+<script>
+    let connection;
+    let selectedChatId = null; // Global variable to hold the selected chat ID
+
+    async function getAccessToken(username, password) {
+        const response = await fetch('http://localhost:3001/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.access_token;
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.message);
+            return null;
+        }
+    }
+
+    async function getChatList(token) {
+        const response = await fetch('https://localhost:6001/chat/list', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const chats = await response.json();
+            displayChatList(chats);
+        } else {
+            console.error('Error fetching chat list:', response.status);
+        }
+    }
+
+    function displayChatList(chats) {
+        const chatListDiv = document.getElementById('chatList');
+        chatListDiv.innerHTML = ''; // Clear previous chat list
+
+        chats.forEach(chat => {
+            const chatItem = document.createElement('div');
+            chatItem.classList.add('chat-list-item');
+            chatItem.textContent = `Chat ID: ${chat.chatId}`; // Display chat ID
+            chatItem.onclick = () => selectChat(chat.chatId);
+            chatListDiv.appendChild(chatItem);
+        });
+    }
+
+    function selectChat(chatId) {
+        selectedChatId = chatId;
+        const chatItems = document.querySelectorAll('.chat-list-item');
+        chatItems.forEach(item => {
+            item.classList.remove('selected');
+            if (item.textContent.includes(chatId)) {
+                item.classList.add('selected');
+            }
+        });
+        console.log(`Selected chat: ${selectedChatId}`);
+    }
+
+    document.getElementById('loginBob').addEventListener('click', async () => {
+        const token = await getAccessToken('bob', 'bob');
+        if (token) {
+            document.getElementById('token').value = token;
+            await getChatList(token); // Fetch chat list after successful login
+            connectToSignalR(token);
+        }
+    });
+
+    document.getElementById('loginAlice').addEventListener('click', async () => {
+        const token = await getAccessToken('alice', 'alice');
+        if (token) {
+            document.getElementById('token').value = token;
+            await getChatList(token); // Fetch chat list after successful login
+            connectToSignalR(token);
+        }
+    });
+
+    async function connectToSignalR(token) {
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl('https://localhost:6001/chat', {
+                accessTokenFactory: () => token
+            })
+            .build();
+
+        connection.on('ReceiveMessage', (user, message) => {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `${user}: ${message}`;
+            messagesDiv.appendChild(messageDiv);
+        });
+
+        connection.onclose(() => {
+            console.log('Connection closed');
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = '✖';
+            statusElement.classList.remove('success');
+            statusElement.classList.add('error');
+            statusElement.style.visibility = 'visible';
+        });
+
+        try {
+            await connection.start();
+            console.log('Connected to SignalR hub');
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = '✔';
+            statusElement.classList.remove('error');
+            statusElement.classList.add('success');
+            statusElement.style.visibility = 'visible';
+        } catch (err) {
+            console.error('Error connecting to SignalR hub:', err);
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = '✖';
+            statusElement.classList.remove('success');
+            statusElement.classList.add('error');
+            statusElement.style.visibility = 'visible';
+        }
+    }
+
+    document.getElementById('sendMsg').addEventListener('click', async () => {
+        const msg = document.getElementById('msg').value;
+
+        if (!selectedChatId) {
+            alert('Please select a chat.');
+            return;
+        }
+
+        try {
+            await connection.invoke('SendMsg', selectedChatId, msg); 
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `YOU: ${msg}`;
+            messagesDiv.appendChild(messageDiv);
+        } catch (err) {
+            console.error('Error sending Msg:', err);
+        }
+    });
+</script>
+</body>
+</html>
