@@ -2,32 +2,25 @@ using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Raven.Message.Application.Handlers;
+using Raven.Message.Application.Services;
 
 namespace Raven.Message.SignalR;
 
 [Authorize]
-public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : Hub
+public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler, ChatService chatService) : Hub
 {
     private static readonly ConcurrentDictionary<string, string?> UserConnectionMap = new();
     
     public override async Task OnConnectedAsync()
     {
-        var userId = Context.UserIdentifier!;
-        
-        UserConnectionMap[userId] = Context.ConnectionId;
-        
-        await Clients.All.SendAsync("ReceiveMessage", "System",
-            $"{Context.UserIdentifier} joined.");
-        
+        UserConnectionMap[Context.UserIdentifier!] = Context.ConnectionId;
         await SendFromSystem(Context.ConnectionId);
-        
-        Console.WriteLine($"{Context.UserIdentifier} joined.");
         await base.OnConnectedAsync();
     }
 
     public async Task SendFromSystem(string receiverId)
     {
-        await Clients.Client(receiverId).SendAsync("ReceiveMessage", "System", "You have successfully joined the chat hub.");
+        await Clients.Client(receiverId).SendAsync("ReceiveSystem", "Successfully Joined.");
     }
     
     public async Task SendMsg(string chatId, string message)
@@ -53,14 +46,34 @@ public class ChatHub(MessageHandler messageHandler, ChatHandler chatHandler) : H
             }
         }
     }
+    
+    public async Task CreateChat(string otherUserId)
+    {
+        var currentUserId = Context.UserIdentifier;
+        if (currentUserId == null || currentUserId == otherUserId)
+        {
+            await Clients.Caller.SendAsync("ReceiveSystem", "Cannot create chat.");
+            return;
+        }
 
-
+        var newChatId = await chatService.CreateSimpleChatAsync(currentUserId, otherUserId);
+        
+        if (UserConnectionMap.TryGetValue(currentUserId, out var currentUserConnectionId))
+        {
+            await Clients.Client(currentUserConnectionId).SendAsync("ReceiveSystem", "Chat Created");
+            await Clients.Client(currentUserConnectionId).SendAsync("ChatCreated", newChatId, otherUserId);
+        }
+        
+        if (UserConnectionMap.TryGetValue(otherUserId, out var otherUserConnectionId))
+        {
+            await Clients.Client(currentUserConnectionId).SendAsync("ReceiveSystem", "Chat Created");
+            await Clients.Client(otherUserConnectionId).SendAsync("ChatCreated", newChatId, currentUserId);
+        }
+    }
+    
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        var userId = Context.UserIdentifier;
-        UserConnectionMap.TryRemove(userId, out _);
-
-        Console.WriteLine(userId + " left the chat hub.");
+        UserConnectionMap.TryRemove(Context.UserIdentifier, out _);
         await base.OnDisconnectedAsync(exception);
     }
 }
