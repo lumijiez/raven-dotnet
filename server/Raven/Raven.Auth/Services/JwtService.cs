@@ -1,33 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Raven.Auth.Interfaces;
 using Raven.Auth.Models;
 
 namespace Raven.Auth.Services;
 
-public class JwtService : IJwtService
+public class JwtService(IConfiguration configuration) : IJwtService
 {
-    private readonly RSA _rsaPrivateKey;
-    private readonly RSA _rsaPublicKey;
-    private readonly IConfiguration _configuration;
-    
-    public JwtService(IConfiguration configuration)
-    {
-        _configuration = configuration;
-        _rsaPrivateKey = RSA.Create();
-        _rsaPublicKey = RSA.Create();
-
-        ImportOrGenerateKeys();
-    }
-    
-    private void ImportOrGenerateKeys()
-    {
-        _rsaPrivateKey.KeySize = 2048;
-        _rsaPublicKey.ImportParameters(_rsaPrivateKey.ExportParameters(false));
-    }
-    
     public string GenerateToken(AppUser user)
     {
         var claims = new[]
@@ -37,14 +18,18 @@ public class JwtService : IJwtService
             new Claim(ClaimTypes.NameIdentifier, user.Id)
         };
 
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured"))
+        );
+
         var signingCredentials = new SigningCredentials(
-            new RsaSecurityKey(_rsaPrivateKey), 
-            SecurityAlgorithms.RsaSha256
+            key,
+            SecurityAlgorithms.HmacSha256
         );
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: claims,
             expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: signingCredentials
@@ -53,23 +38,21 @@ public class JwtService : IJwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
     
-    public string GetPublicKey()
-    {
-        var publicKeyBytes = _rsaPublicKey.ExportRSAPublicKey();
-        return Convert.ToBase64String(publicKeyBytes);
-    }
-
     public ClaimsPrincipal ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured"))
+        );
+        
         var validationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ValidIssuer = _configuration["Jwt:Issuer"],
-            ValidAudience = _configuration["Jwt:Audience"],
-            IssuerSigningKey = new RsaSecurityKey(_rsaPublicKey)
+            ValidIssuer = configuration["Jwt:Issuer"],
+            ValidAudience = configuration["Jwt:Audience"],
+            IssuerSigningKey = key
         };
 
         return tokenHandler.ValidateToken(token, validationParameters, out _);

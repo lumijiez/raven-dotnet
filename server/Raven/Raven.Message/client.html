@@ -54,7 +54,7 @@
 
 <script>
     let connection;
-    let selectedChatId = null; // Global variable to hold the selected chat ID
+    let selectedChatId = null; 
 
     async function getAccessToken(username, password) {
         const response = await fetch('http://localhost:3001/auth/login', {

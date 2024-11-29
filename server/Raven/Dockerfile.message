@@ -1,7 +1,9 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 80
+EXPOSE 443
+
+RUN mkdir -p /app/Certs && chmod 700 /app/Certs
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -24,6 +26,14 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+COPY Raven.Auth/Certs/cert.pfx /app/Certs/cert.pfx
+
+RUN chmod 644 /app/Certs/cert.pfx
+
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/Certs/cert.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=raven
+
 ENV ASPNETCORE_HTTP_PORTS=80
+ENV ASPNETCORE_HTTPS_PORTS=443
 
 ENTRYPOINT ["dotnet", "Raven.Message.dll"]
