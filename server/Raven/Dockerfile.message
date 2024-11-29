@@ -2,7 +2,6 @@
 USER $APP_UID
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -26,8 +25,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENV ASPNETCORE_HTTP_PORTS=80
-ENV ASPNETCORE_HTTPS_PORTS=443
-
-VOLUME ["/app/data-protection-keys"]
 
 ENTRYPOINT ["dotnet", "Raven.Message.dll"]

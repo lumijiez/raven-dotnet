@@ -1,6 +1,8 @@
 using Raven.Message;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection", LogLevel.Error);
+
 var env = builder.Environment;
 var config = builder.Configuration;
 var services = builder.Services;

@@ -18,10 +18,6 @@ public class Startup(IConfiguration configuration)
     
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDataProtection()
-            .SetApplicationName("RavenMessage")
-            .UseEphemeralDataProtectionProvider();
-
         services.Configure<MongoDBSettings>(
             configuration.GetSection(nameof(MongoDBSettings)));
         
