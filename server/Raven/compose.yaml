@@ -4,10 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile.bff
     ports:
-      - "3001:3001"
+      - "3001:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://0.0.0.0:3001"
     networks:
       - raven-network
   
@@ -17,10 +16,11 @@ services:
       context: .
       dockerfile: Dockerfile.auth
     ports:
-      - "5001:5001"
+      - "80:8080"
+      - "443:443"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "https://0.0.0.0:5001"
+      ASPNETCORE_URLS: "https://+:443;http://+:8080"
     networks:
       - raven-network
     depends_on:
@@ -33,16 +33,16 @@ services:
       context: .
       dockerfile: Dockerfile.message
     ports:
-      - "6001:6001"
+      - "6001:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://0.0.0.0:6001"
     networks:
       - raven-network
   
   mongodb:
     image: mongo:latest
     container_name: mongodb
+    command: mongod --quiet --logpath /dev/null
     ports:
       - "27017:27017"
     environment:
@@ -70,3 +70,4 @@ services:
 networks:
   raven-network:
     driver: bridge
+    

@@ -9,7 +9,7 @@ using Raven.Auth.Models;
 namespace Raven.Auth.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]

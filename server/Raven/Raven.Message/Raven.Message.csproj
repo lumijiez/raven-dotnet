@@ -24,9 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>

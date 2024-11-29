@@ -4,7 +4,7 @@ using Raven.Auth.Interfaces;
 namespace Raven.Auth.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/key")]
 public class KeyController(IJwtService jwtService) : ControllerBase
 {
     [HttpGet("public")]

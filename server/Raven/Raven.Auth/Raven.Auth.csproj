@@ -28,5 +28,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="certs\" />
+      <Folder Include="Properties\" />
+    </ItemGroup>
 
 </Project>
