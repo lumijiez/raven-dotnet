@@ -1,6 +1,11 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using Raven.Message.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Raven.Message.Application.Handlers;
 using Raven.Message.Application.Services;
 using Raven.Message.Infrastructure;
@@ -13,6 +18,10 @@ public class Startup(IConfiguration configuration)
     
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddDataProtection()
+            .SetApplicationName("RavenMessage")
+            .UseEphemeralDataProtectionProvider();
+
         services.Configure<MongoDBSettings>(
             configuration.GetSection(nameof(MongoDBSettings)));
         
@@ -29,7 +38,7 @@ public class Startup(IConfiguration configuration)
         services.AddAuthentication()
             .AddJwtBearer(options =>
             {
-                options.Authority = "https://identity:5001";
+                options.Authority = "https://auth:443";
                 options.TokenValidationParameters.ValidateAudience = false;
                 options.Events = new JwtBearerEvents
                 {

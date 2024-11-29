@@ -1,10 +1,12 @@
 services:
   bff:
+    container_name: bff
     build:
       context: .
       dockerfile: Dockerfile.bff
     ports:
-      - "3001:8080"
+      - "80:80"
+      - "443:443"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
     networks:
@@ -16,11 +18,10 @@ services:
       context: .
       dockerfile: Dockerfile.auth
     ports:
-      - "80:8080"
-      - "443:443"
+      - "5001:80"
+      - "5002:443"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "https://+:443;http://+:8080"
     networks:
       - raven-network
     depends_on:
@@ -33,7 +34,8 @@ services:
       context: .
       dockerfile: Dockerfile.message
     ports:
-      - "6001:8080"
+      - "6001:80"
+      - "6002:443"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
     networks:

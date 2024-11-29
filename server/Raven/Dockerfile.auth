@@ -1,47 +1,38 @@
-# Base image with ASP.NET runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-# Create and set permissions for the certs directory
 RUN mkdir -p /app/certs && chmod 700 /app/certs
 
-# Build image with .NET SDK
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy and restore the project
 COPY ["Raven.Auth/Raven.Auth.csproj", "Raven.Auth/"]
 RUN dotnet restore "Raven.Auth/Raven.Auth.csproj"
 
-# Copy the entire project and build it
 COPY . .
 WORKDIR "/src/Raven.Auth"
 RUN dotnet build "Raven.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Publish the app
 RUN dotnet publish "Raven.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
-# Final runtime image
 FROM base AS final
 WORKDIR /app
 
-# Copy the published application and certificate
 COPY --from=build /app/publish .
 COPY Raven.Auth/certs/cert.pfx /app/certs/cert.pfx
 
-# Set the correct permissions on the certificate
-RUN chmod 600 /app/certs/cert.pfx
+RUN chmod 644 /app/certs/cert.pfx
 
-# Environment variables for Kestrel configuration
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cert.pfx
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password=raven
 
-# Optionally, run the OpenSSL command to verify the certificate at build time
-RUN ls -la /app/certs/
+ENV ASPNETCORE_HTTP_PORTS=80
+ENV ASPNETCORE_HTTPS_PORTS=443
 
-# Run the application
+VOLUME ["/app/data-protection-keys"]
+
 ENTRYPOINT ["dotnet", "Raven.Auth.dll"]
 
