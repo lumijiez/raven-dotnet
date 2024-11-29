@@ -1,0 +1,30 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 5001
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["Raven.Auth/Raven.Auth.csproj", "Raven.Auth/"]
+RUN dotnet restore "Raven.Auth/Raven.Auth.csproj"
+COPY . .
+WORKDIR "/src/Raven.Auth"
+RUN dotnet build "Raven.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+RUN dotnet publish "Raven.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+
+RUN mkdir -p /https && chmod 777 /https
+RUN dotnet dev-certs https -ep /https/aspnetapp.pfx -p raven
+RUN dotnet dev-certs https --trust || echo "Skipping trust on non-Windows/MacOS platform"
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+COPY --from=build /https/aspnetapp.pfx /app/aspnetapp.pfx
+
+RUN chmod 644 /app/aspnetapp.pfx
+
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=raven
+
+ENTRYPOINT ["dotnet", "Raven.Auth.dll"]

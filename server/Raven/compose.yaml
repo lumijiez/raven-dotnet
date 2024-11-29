@@ -8,18 +8,27 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://0.0.0.0:3001"
+    networks:
+      - raven-network
   
-  identity:
+  auth:
+    container_name: auth
     build:
       context: .
-      dockerfile: Dockerfile.identity
+      dockerfile: Dockerfile.auth
     ports:
       - "5001:5001"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://0.0.0.0:5001"
+      ASPNETCORE_URLS: "https://0.0.0.0:5001"
+    networks:
+      - raven-network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   message:
+    container_name: message
     build:
       context: .
       dockerfile: Dockerfile.message
@@ -28,3 +37,36 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://0.0.0.0:6001"
+    networks:
+      - raven-network
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: "messages"
+    networks:
+      - raven-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "raven"
+      POSTGRES_USER: "raven"
+      POSTGRES_PASSWORD: "raven"
+    networks:
+      - raven-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "raven" ]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+networks:
+  raven-network:
+    driver: bridge

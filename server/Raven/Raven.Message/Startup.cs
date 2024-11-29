@@ -29,7 +29,7 @@ public class Startup(IConfiguration configuration)
         services.AddAuthentication()
             .AddJwtBearer(options =>
             {
-                options.Authority = "https://localhost:5001";
+                options.Authority = "https://identity:5001";
                 options.TokenValidationParameters.ValidateAudience = false;
                 options.Events = new JwtBearerEvents
                 {
