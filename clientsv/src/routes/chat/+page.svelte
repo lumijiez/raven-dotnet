@@ -27,7 +27,7 @@
 	});
 
 	async function getChatList(token) {
-		const response = await fetch('https://localhost:6001/chat/list', {
+		const response = await fetch('http://localhost/message/chat/list', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${token}`
@@ -36,6 +36,7 @@
 
 		if (response.ok) {
 			const chatsData = await response.json();
+			console.log(chatsData);
 			chatsData.forEach(chat => {
 				addChatMessage(chat.chatId, "LOAD FROM", "DATABASE");
 			});
@@ -46,7 +47,7 @@
 
 	async function connectToSignalR(token) {
 		connection = new signalR.HubConnectionBuilder()
-			.withUrl('https://localhost:6001/chat', {
+			.withUrl('http://localhost/message', {
 				accessTokenFactory: () => token
 			})
 			.build();
@@ -54,6 +55,10 @@
 		connection.on('ReceiveMessage', (chatId, user, message) => {
 			addChatMessage(chatId, user, message);
 		});
+
+		connection.on('ReceiveSystem', (message) => {
+			addChatMessage("System", "System", message);
+		})
 
 		try {
 			await connection.start();
@@ -81,7 +86,7 @@
 			<div class="flex flex-col items-center space-y-4 pt-4">
 
 				<div class="flex items-center justify-center h-12 w-12 rounded-full">
-					<img src={logo} class="w-12 h-12 text-primary-700" />
+					<img src={logo} alt="img" class="w-12 h-12 text-primary-700" />
 				</div>
 
 				<div class="flex items-center justify-center h-12 w-12 rounded-full hover:bg-primary-400 hover:cursor-pointer transition duration-200">
@@ -102,7 +107,7 @@
 			</div>
 		</div>
 
-		<ChatList />
+		<ChatList {connection} />
 		<ChatBox {connection} />
 	</div>
 </div>

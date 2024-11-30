@@ -5,7 +5,7 @@
 	import ChatBoxHeader from '$lib/components/ChatBoxHeader.svelte';
 	import { afterUpdate } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import Message from '$lib/components/Message.svelte'; // Import your Message component
+	import Message from '$lib/components/Message.svelte';
 
 	export let connection;
 	let message = '';

@@ -1,8 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { jwtDecode } from 'jwt-decode';
-	import { userId } from '$lib/global.js';
 
 	let username = '';
 	let password = '';
@@ -26,7 +24,7 @@
 		}
 
 		try {
-			const response = await fetch('http://localhost:3001/auth/login', {
+			const response = await fetch('http://localhost/auth/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
