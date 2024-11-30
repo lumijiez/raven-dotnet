@@ -13,20 +13,16 @@ COPY ["Raven.BFF/Raven.BFF.csproj", "Raven.BFF/"]
 COPY ["Raven.BFF.Application/Raven.BFF.Application.csproj", "Raven.BFF.Application/"]
 COPY ["Raven.BFF.Domain/Raven.BFF.Domain.csproj", "Raven.BFF.Domain/"]
 RUN dotnet restore "Raven.BFF/Raven.BFF.csproj"
-COPY . .
+COPY . . 
 WORKDIR "/src/Raven.BFF"
 RUN dotnet build "Raven.BFF.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Raven.BFF.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-COPY Raven.BFF/wwwroot /app/wwwroot
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /app/publish . 
 
 COPY Raven.BFF/Certs/cert.pfx /app/Certs/cert.pfx
 

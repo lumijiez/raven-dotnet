@@ -7,7 +7,8 @@
         { "Host": "auth", "Port": 80 }
       ],
       "UpstreamPathTemplate": "/auth/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "CorsPolicyName": "GlobalCorsPolicy"
     },
     {
       "DownstreamPathTemplate": "/api/message/{everything}",
@@ -16,16 +17,17 @@
         { "Host": "message", "Port": 80 }
       ],
       "UpstreamPathTemplate": "/message/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "CorsPolicyName": "GlobalCorsPolicy"
     }
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:80",
-    "RateLimitOptions": {
-      "EnableRateLimiting": true,
-      "Period": "1m",
-      "PeriodTimes": 1,
-      "Limit": 100
+    "CorsOptions": {
+      "AllowedOrigins": [ "http://localhost:5173" ],
+      "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "AllowedHeaders": [ "*" ],
+      "AllowCredentials": true
     }
   }
 }

@@ -33,9 +33,12 @@ public class Startup(IConfiguration configuration)
     public static void Configure(WebApplication app, IHostEnvironment env)
     {
         app.UseHttpsRedirection();
-        
+
+        app.UseOcelot().Wait();
+
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.UseCors(x => x
             .AllowAnyMethod()
             .AllowAnyHeader()
@@ -43,7 +46,5 @@ public class Startup(IConfiguration configuration)
             .AllowCredentials());
 
         app.MapControllers();
-        app.UseStaticFiles();
-        app.UseOcelot().Wait();
     }
 }
