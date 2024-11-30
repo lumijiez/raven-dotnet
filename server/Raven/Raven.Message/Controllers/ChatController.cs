@@ -8,7 +8,7 @@ using Raven.Message.Application.Services;
 
 namespace Raven.Message.Controllers;
 
-[Route("chat/")]
+[Route("api/message/chat/")]
 [ApiController]
 [Authorize]
 public class ChatController(ChatService chatService) : ControllerBase

@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.DataProtection;
-using Raven.BFF.Application.Services;
-using Raven.BFF.Domain.Settings;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 namespace Raven.BFF;
 
@@ -8,30 +10,32 @@ public class Startup(IConfiguration configuration)
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped(_ =>
-        {
-            var settings = new OpenIDSettings();
-            configuration.GetSection("OpenIdConnectSettings").Bind(settings);
-            return settings;
-        });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"]
+                };
+            });
 
-        services.AddScoped<AuthenticationService>();
-        services.AddHttpClient();
+        services.AddOcelot();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
     }
 
     public static void Configure(WebApplication app, IHostEnvironment env)
     {
-        if (env.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
         app.UseHttpsRedirection();
-
+        
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCors(x => x
             .AllowAnyMethod()
             .AllowAnyHeader()
@@ -39,5 +43,7 @@ public class Startup(IConfiguration configuration)
             .AllowCredentials());
 
         app.MapControllers();
+        app.UseStaticFiles();
+        app.UseOcelot().Wait();
     }
 }

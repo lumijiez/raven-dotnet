@@ -26,7 +26,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-COPY Raven.Auth/Certs/cert.pfx /app/Certs/cert.pfx
+COPY Raven.Message/Certs/cert.pfx /app/Certs/cert.pfx
 
 RUN chmod 644 /app/Certs/cert.pfx
 

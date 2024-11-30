@@ -9,17 +9,21 @@
 
     <ItemGroup>
         <PackageReference Include="IdentityModel" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Raven.BFF.Application\Raven.BFF.Application.csproj" />
-      <ProjectReference Include="..\Raven.BFF.Domain\Raven.BFF.Domain.csproj" />
+        <PackageReference Include="Ocelot" Version="23.4.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Properties\" />
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="ocelot.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

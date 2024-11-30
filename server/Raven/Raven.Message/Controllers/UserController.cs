@@ -8,7 +8,7 @@ using Raven.Message.Domain.Entities;
 namespace Raven.Message.Controllers;
 
 [ApiController]
-[Route("user/")]
+[Route("api/message/user/")]
 [Authorize]
 public class UserProfileController(UserService userService) : ControllerBase
 {

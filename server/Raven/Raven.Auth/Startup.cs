@@ -109,7 +109,11 @@ public class Startup(IConfiguration configuration)
             dbContext.Database.Migrate();
         }
 
-        app.UseHttpsRedirection();
+        if (app.Environment.IsProduction())
+        {
+            app.UseHttpsRedirection();
+        }
+        
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

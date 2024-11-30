@@ -2,6 +2,7 @@ using Raven.BFF;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection", LogLevel.Error);
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
 var env = builder.Environment;
 var config = builder.Configuration;

@@ -22,11 +22,13 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Raven.BFF.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+COPY Raven.BFF/wwwroot /app/wwwroot
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-COPY Raven.Auth/Certs/cert.pfx /app/Certs/cert.pfx
+COPY Raven.BFF/Certs/cert.pfx /app/Certs/cert.pfx
 
 RUN chmod 644 /app/Certs/cert.pfx
 

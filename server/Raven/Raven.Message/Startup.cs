@@ -85,8 +85,11 @@ public class Startup(IConfiguration configuration)
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
-
+        if (app.Environment.IsProduction())
+        {
+            app.UseHttpsRedirection();
+        }
+        
         app.UseRouting();
 
         app.UseCors(x => x
