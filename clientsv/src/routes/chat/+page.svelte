@@ -27,7 +27,7 @@
 	});
 
 	async function getChatList(token) {
-		const response = await fetch('https://localhost:6001/chat/list', {
+		const response = await fetch('http://localhost/message/chat/list', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${token}`
@@ -47,7 +47,7 @@
 
 	async function connectToSignalR(token) {
 		connection = new signalR.HubConnectionBuilder()
-			.withUrl('https://localhost:6001/chat', {
+			.withUrl('http://localhost/message', {
 				accessTokenFactory: () => token
 			})
 			.build();
