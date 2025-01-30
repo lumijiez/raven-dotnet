@@ -1,3 +1,1 @@
-# Raven
-
-- Placeholder repository for our university internship/practice/semester project.
+MOVED TO https://github.com/lumijiez/raven
